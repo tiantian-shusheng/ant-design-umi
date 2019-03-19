@@ -4,11 +4,25 @@
 export default{
   plugins: [
     ['umi-plugin-react', {
-      
+      antd: true
     }]
   ],
   routes: [{
     path: '/',
-    component: './HelloWord' //它是相对于 page 目录的相对路径
+    component: '../layout', //它是相对于 page 目录的相对路径
+    routes: [
+      {
+        path: "/",
+        component: "./HelloWord"
+      },
+      {
+        path: "list",
+        component: "./List"
+      },
+      {
+        path: "card",
+        component: "./card"
+      }
+    ]
   }]
 }
