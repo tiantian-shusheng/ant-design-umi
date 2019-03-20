@@ -4,9 +4,19 @@
 export default{
   plugins: [
     ['umi-plugin-react', {
-      antd: true
+      antd: true,
+      dva: true
     }]
   ],
+  proxy:{
+    '/dev': {
+      target: 'https://08ad1pao69.execute-api.us-east-1.amazonaws.com',
+      changeOrigin: 'true'
+    }
+  },
+  theme: {
+    "@primary-color": "#30b767", // 绿色
+  },
   routes: [{
     path: '/',
     component: '../layout', //它是相对于 page 目录的相对路径

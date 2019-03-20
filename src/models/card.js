@@ -1,19 +1,19 @@
+import request from "../util/request";
 export default {
   namespace: 'card',
   state: {
-    count: 1,
-    data: [
-      {
-        id: 1,
-        setup: 'Did you hear about the two silk worms in a race?',
-        punchline: 'It ended in a tie',
-      },
-      {
-        id: 2,
-        setup: 'What happens to a frog\'s car when it breaks down?',
-        punchline: 'It gets toad away',
-      },
-    ]
+    counter: 0,
+    data: []
+  },
+  effects: {
+    *init({payload,callback},{call,put}){
+      const url = '/dev/random_joke';
+      const response = yield call(request,url);
+      yield put({
+        type: "addNewCard",
+        payload: response
+      })
+    }
   },
   reducers: {
     addNewCard(state, { payload: newCard }) {
