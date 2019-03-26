@@ -32,6 +32,10 @@ export default{
       {
         path: "card",
         component: "./card"
+      },
+      {
+        path: "drag",
+        component: "./drag/container"
       }
     ]
   }]

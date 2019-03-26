@@ -28,6 +28,9 @@ class Index extends Component {
             <Menu.Item key="Card">
               <Link to="/card"><Icon type="mail" />Card</Link>
             </Menu.Item>
+            <Menu.Item key="Drag">
+              <Link to="/drag"><Icon type="mail" />Drag</Link>
+            </Menu.Item>
           </Menu>
         </Sider>
         <Layout>

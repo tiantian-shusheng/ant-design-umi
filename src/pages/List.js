@@ -1,5 +1,6 @@
 import react from "react";
-
+import { DragSource } from 'react-dnd';
+// import { ItemTypes } from './Constants';
 import CompontList from "./CompontList";
 
 class List extends React.Component {
