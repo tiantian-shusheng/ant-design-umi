@@ -36,6 +36,9 @@ export default{
       {
         path: "drag",
         component: "./drag/container"
+      },{
+        path: "dragaa",
+        component: "./dragaa"
       }
     ]
   }]

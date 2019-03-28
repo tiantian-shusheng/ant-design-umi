@@ -9,10 +9,16 @@ const style = {
   marginBottom: '1.5rem',
   cursor: 'move',
   float: 'left',
+  position: 'absolute'
 }
 
 const SourceSpec = {
-  beginDrag: props => ({ name: props.name, id: props.id }),
+  beginDrag: (props, monitor, component) => {
+    return {
+      name: props.name, id: props.id
+    }
+  },
+  // beginDrag: props => ({ name: props.name, id: props.id }),
   endDrag(props, monitor) {
     const item = monitor.getItem()
     const dropResult = monitor.getDropResult()
@@ -24,13 +30,6 @@ const SourceSpec = {
     //   alert(`You dropped ${item.name} into ${dropResult.name}!`)
     // }
   },
-
-    // canDrag(props, monitor){
-    //   // ..
-    // },
-    // isDragging(props, monitor){
-    //   // ..
-    // }
 }
 
 @DragSource(ItemTypes.BOX, SourceSpec, (connect, monitor) => ({
@@ -44,11 +43,11 @@ export default class Box extends React.Component {
     this.dropSource = React.createRef()
   }
   render() {
-    const { isDragging, connectDragSource, name, id } = this.props
+    const { isDragging, connectDragSource, name, id, left, top } = this.props
     const opacity = isDragging ? 0.4 : 1
     connectDragSource(this.dropSource)
     return (
-      <div id={id} ref={this.dropSource} style={Object.assign({}, style, { opacity })}>
+      <div id={id} ref={this.dropSource} style={Object.assign({}, style, { left, top }, { opacity })}>
         {name}
       </div>
     )

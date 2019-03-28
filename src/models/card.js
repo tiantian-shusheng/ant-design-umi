@@ -24,6 +24,13 @@ export default {
         data: nextData,
         counter: nextCounter,
       };
-    }
+    },
+    setData(state, { payload: data }) {
+     
+      return {
+        // data: nextData,
+        // counter: nextCounter,
+      };
+    },
   },
 }

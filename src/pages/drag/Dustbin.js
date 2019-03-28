@@ -1,9 +1,10 @@
 import react from "react";
 import { DropTarget } from 'react-dnd';
 import ItemTypes from './ItemTypes';
+import Box from './Box';
 const style = {
-  height: '12rem',
-  width: '12rem',
+  height: '300px',
+  width: '800px',
   marginRight: '1.5rem',
   marginBottom: '1.5rem',
   color: 'white',
@@ -12,33 +13,30 @@ const style = {
   fontSize: '1rem',
   lineHeight: 'normal',
   float: 'left',
+  position: 'relative',
+  color: "#000"
 }
 // DropTarget 用于包装接收拖拽元素的组件，使组件能够放置（dropped on it）
 const targetSpec = {
   drop: (props, monitor, component) => {
-    const e = window.event;
-    var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
-    var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
-    var x = e.pageX || e.clientX + scrollX;
-    var y = e.pageY || e.clientY + scrollY;
-    // clientX与clientY是获取相对于当前屏幕的坐标，忽略了页面滚动因素，
-    // 这在很多环境下很有用，但当我们需要考虑页面滚动，也就是相对于文档（body元素）的坐标时怎么办呢？只要加上滚动的位移就可以了。
-
-    // 在chrome可以通过document.body.scrollLeft，document.body.scrollTop计算出页面滚动位移，
-    // 而在IE下可以通过document.documentElement.scrollLeft，document.documentElement.scrollTop
-
-
-    console.log('鼠标x', x)
-    console.log('鼠标y', y)
-    // console.log(props)
-    // console.log(monitor.getSourceClientOffset())
+    if (!component) {
+      return
+    }
+    const item = monitor.getItem()
+    const left = monitor.getSourceClientOffset().x-500;
+    const top = monitor.getSourceClientOffset().y-112;
+    if(monitor.getInitialClientOffset().x < 400){
+      var creatNew = true
+      component.moveBox(item.name,item.id, left, top, creatNew)
+    }else{
+      var creatNew = false
+      component.moveBox(item.name,item.id, left, top, creatNew)
+    }
   },
   hover(props, monitor, component) {
   },
-  // canDrop(props, monitor){
-  //   monitor.canDrop()
-  // }
 }
+
 
 @DropTarget(ItemTypes.BOX, targetSpec, (connect, monitor) => ({
   connectDropTarget: connect.dropTarget(),
@@ -50,10 +48,46 @@ export default class Dustbin extends React.Component {
   constructor() {
     super(...arguments)
     this.dropTarget = React.createRef()
+    this.state = {
+      boxes: [],
+    }
+  }
+
+  moveBox(name, id, left, top, creatNew) {
+    const { boxes } = this.state;
+    // 需要创建新的 box
+    if(creatNew){
+      boxes.push({
+        name,
+        id,
+        left,
+        top,
+      })
+    }else{
+      boxes.map((item,index) =>{
+        if(item.id === id) {
+          boxes[index].left = left;
+          boxes[index].top = top;
+        }
+      })
+      this.setState({
+        boxes,
+      })
+    }
+    // this.setState(
+    //   update(this.state, {
+    //     boxes: {
+    //       [id]: {
+    //         $merge: { left, top },
+    //       },
+    //     },
+    //   }),
+    // )
   }
 
   render() {
     const { canDrop, isOver, connectDropTarget } = this.props
+    const {boxes} = this.state;
     const isActive = canDrop && isOver
     connectDropTarget(this.dropTarget)
     let backgroundColor = '#222'
@@ -67,6 +101,23 @@ export default class Dustbin extends React.Component {
         ref={this.dropTarget}
         style={Object.assign({}, style, { backgroundColor })}
       >
+        {/* <svg width="100%" height="100%" version="1.1"
+          xmlns="http://www.w3.org/2000/svg">
+          <g fill="dodgerblue" transform="matrix(1,0,0,1, 65.1846, 2)">
+            <rect x="10" y="10" width="40" height="40" ry="10" />
+          </g>
+        </svg> */}
+        {
+          boxes.length >0 ? (
+            boxes.map( (item,index) =>{
+              return (<Box key={index} name={item.name} id={item.id} left={item.left} top={item.top} />)
+            })
+          ) : (
+            <span></span>
+          )
+            
+        }
+       
         {isActive ? 'Release to drop' : 'Drag a box here'}
       </div>
     )
