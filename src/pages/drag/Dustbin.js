@@ -22,9 +22,11 @@ const targetSpec = {
     if (!component) {
       return
     }
+    const oMain = document.getElementById("wrap")
     const item = monitor.getItem()
-    const left = monitor.getSourceClientOffset().x-500;
-    const top = monitor.getSourceClientOffset().y-112;
+    // console.log(item)
+    const left = monitor.getSourceClientOffset().x-oMain.offsetLeft;
+    const top = monitor.getSourceClientOffset().y-oMain.offsetTop;
     if(monitor.getInitialClientOffset().x < 400){
       var creatNew = true
       component.moveBox(item.name,item.id, left, top, creatNew)
@@ -59,7 +61,7 @@ export default class Dustbin extends React.Component {
     if(creatNew){
       boxes.push({
         name,
-        id,
+        id: Math.random(),
         left,
         top,
       })
@@ -74,20 +76,12 @@ export default class Dustbin extends React.Component {
         boxes,
       })
     }
-    // this.setState(
-    //   update(this.state, {
-    //     boxes: {
-    //       [id]: {
-    //         $merge: { left, top },
-    //       },
-    //     },
-    //   }),
-    // )
   }
 
   render() {
     const { canDrop, isOver, connectDropTarget } = this.props
-    const {boxes} = this.state;
+    const { boxes } = this.state;
+    console.log(boxes)
     const isActive = canDrop && isOver
     connectDropTarget(this.dropTarget)
     let backgroundColor = '#222'
@@ -98,6 +92,7 @@ export default class Dustbin extends React.Component {
     }
     return (
       <div
+        id="wrap"
         ref={this.dropTarget}
         style={Object.assign({}, style, { backgroundColor })}
       >
@@ -114,8 +109,7 @@ export default class Dustbin extends React.Component {
             })
           ) : (
             <span></span>
-          )
-            
+          )          
         }
        
         {isActive ? 'Release to drop' : 'Drag a box here'}
