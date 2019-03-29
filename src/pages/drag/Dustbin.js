@@ -22,17 +22,20 @@ const targetSpec = {
     if (!component) {
       return
     }
-    const oMain = document.getElementById("wrap")
+    const targetName = component.props.name;
+    const targetPage = component.props.page; // 第几页
+    const oMain = document.getElementById(targetName);
     const item = monitor.getItem()
-    // console.log(item)
     const left = monitor.getSourceClientOffset().x-oMain.offsetLeft;
     const top = monitor.getSourceClientOffset().y-oMain.offsetTop;
+    // const left = monitor.getSourceClientOffset().x;
+    // const top = monitor.getSourceClientOffset().y;
     if(monitor.getInitialClientOffset().x < 400){
       var creatNew = true
-      component.moveBox(item.name,item.id, left, top, creatNew)
+      component.moveBox(item.name,item.id, left, top, creatNew, targetPage)
     }else{
       var creatNew = false
-      component.moveBox(item.name,item.id, left, top, creatNew)
+      component.moveBox(item.name,item.id, left, top, creatNew, targetPage)
     }
   },
   hover(props, monitor, component) {
@@ -55,7 +58,7 @@ export default class Dustbin extends React.Component {
     }
   }
 
-  moveBox(name, id, left, top, creatNew) {
+  moveBox(name, id, left, top, creatNew, targetPage) {
     const { boxes } = this.state;
     // 需要创建新的 box
     if(creatNew){
@@ -64,12 +67,14 @@ export default class Dustbin extends React.Component {
         id: Math.random(),
         left,
         top,
+        targetPage,
       })
     }else{
       boxes.map((item,index) =>{
         if(item.id === id) {
           boxes[index].left = left;
           boxes[index].top = top;
+          boxes[index].targetPage = targetPage;
         }
       })
       this.setState({
@@ -79,9 +84,8 @@ export default class Dustbin extends React.Component {
   }
 
   render() {
-    const { canDrop, isOver, connectDropTarget } = this.props
+    const { canDrop, isOver, connectDropTarget,name, page } = this.props
     const { boxes } = this.state;
-    console.log(boxes)
     const isActive = canDrop && isOver
     connectDropTarget(this.dropTarget)
     let backgroundColor = '#222'
@@ -92,7 +96,8 @@ export default class Dustbin extends React.Component {
     }
     return (
       <div
-        id="wrap"
+        id={name}
+        page={page}
         ref={this.dropTarget}
         style={Object.assign({}, style, { backgroundColor })}
       >
@@ -111,7 +116,6 @@ export default class Dustbin extends React.Component {
             <span></span>
           )          
         }
-       
         {isActive ? 'Release to drop' : 'Drag a box here'}
       </div>
     )

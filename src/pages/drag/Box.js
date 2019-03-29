@@ -18,7 +18,6 @@ const SourceSpec = {
       name: props.name, id: props.id
     }
   },
-  // beginDrag: props => ({ name: props.name, id: props.id }),
   endDrag(props, monitor) {
     const item = monitor.getItem()
     const dropResult = monitor.getDropResult()
@@ -53,22 +52,3 @@ export default class Box extends React.Component {
     )
   }
 }
-
-// export default DragSource(
-//   ItemTypes.BOX,
-//   {
-//     beginDrag: props => ({ name: props.name }),
-//     endDrag(props, monitor) {
-//       console.log(111111111)
-//       const item = monitor.getItem()
-//       const dropResult = monitor.getDropResult()
-//       if (dropResult) {
-//         alert(`You dropped ${item.name} into ${dropResult.name}!`)
-//       }
-//     },
-//   },
-//   (connect, monitor) => ({
-//     connectDragSource: connect.dragSource(),
-//     isDragging: monitor.isDragging(),
-//   }),
-// )(Box)
