@@ -1,6 +1,7 @@
 import React from 'react'
 import { DragSource } from 'react-dnd'
 import ItemTypes from './ItemTypes'
+import styles from '../index.less'
 const style = {
   border: '1px dashed gray',
   backgroundColor: 'white',
@@ -47,7 +48,10 @@ export default class Box extends React.Component {
     connectDragSource(this.dropSource)
     return (
       <div id={id} ref={this.dropSource} style={Object.assign({}, style, { left, top }, { opacity })}>
-        {name}
+      {
+        this.props.children
+      }
+      {name}
       </div>
     )
   }

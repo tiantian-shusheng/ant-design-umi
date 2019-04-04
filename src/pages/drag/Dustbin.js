@@ -2,6 +2,7 @@ import react from "react";
 import { DropTarget } from 'react-dnd';
 import ItemTypes from './ItemTypes';
 import Box from './Box';
+import styles from '../index.less'
 const style = {
   height: '300px',
   width: '800px',
@@ -14,7 +15,8 @@ const style = {
   lineHeight: 'normal',
   float: 'left',
   position: 'relative',
-  color: "#000"
+  color: "#000",
+  border: '1px solid #000'
 }
 // DropTarget 用于包装接收拖拽元素的组件，使组件能够放置（dropped on it）
 const targetSpec = {
@@ -26,8 +28,8 @@ const targetSpec = {
     const targetPage = component.props.page; // 第几页
     const oMain = document.getElementById(targetName);
     const item = monitor.getItem()
-    const left = monitor.getSourceClientOffset().x-oMain.offsetLeft;
-    const top = monitor.getSourceClientOffset().y-oMain.offsetTop;
+    const left = monitor.getSourceClientOffset().x-oMain.offsetLeft + document.documentElement.scrollLeft;
+    const top = monitor.getSourceClientOffset().y-oMain.offsetTop + document.documentElement.scrollTop;
     // const left = monitor.getSourceClientOffset().x;
     // const top = monitor.getSourceClientOffset().y;
     if(monitor.getInitialClientOffset().x < 400){
@@ -41,7 +43,6 @@ const targetSpec = {
   hover(props, monitor, component) {
   },
 }
-
 
 @DropTarget(ItemTypes.BOX, targetSpec, (connect, monitor) => ({
   connectDropTarget: connect.dropTarget(),
@@ -77,29 +78,32 @@ export default class Dustbin extends React.Component {
           boxes[index].targetPage = targetPage;
         }
       })
-      this.setState({
-        boxes,
-      })
+      // this.setState({
+      //   boxes,
+      // })
     }
+  }
+
+  delete = (id) =>{
+    const { boxes } = this.state;
+    const result = boxes.filter(item => item.id !== id)
+    this.setState({
+      boxes: result
+    })
   }
 
   render() {
     const { canDrop, isOver, connectDropTarget,name, page } = this.props
     const { boxes } = this.state;
+    console.log(boxes)
     const isActive = canDrop && isOver
     connectDropTarget(this.dropTarget)
-    let backgroundColor = '#222'
-    if (isActive) {
-      backgroundColor = 'darkgreen'
-    } else if (canDrop) {
-      backgroundColor = 'darkkhaki'
-    }
     return (
       <div
         id={name}
         page={page}
         ref={this.dropTarget}
-        style={Object.assign({}, style, { backgroundColor })}
+        style={Object.assign({}, style)}
       >
         {/* <svg width="100%" height="100%" version="1.1"
           xmlns="http://www.w3.org/2000/svg">
@@ -110,13 +114,15 @@ export default class Dustbin extends React.Component {
         {
           boxes.length >0 ? (
             boxes.map( (item,index) =>{
-              return (<Box key={index} name={item.name} id={item.id} left={item.left} top={item.top} />)
+              return (
+              <Box key={index} name={item.name} id={item.id} left={item.left} top={item.top}>
+                <span className={styles.delete} onClick={()=> this.delete(item.id)}>x</span>
+              </Box> )
             })
           ) : (
             <span></span>
           )          
         }
-        {isActive ? 'Release to drop' : 'Drag a box here'}
       </div>
     )
   }
